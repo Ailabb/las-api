@@ -1,4 +1,32 @@
-const query = require("../infraestrutura/database/queries");
+const usuariosMock =require ("./usuraios.json");
+
+class Usuarios {
+    listar(){
+        return Promise.resolve (usuariosMock);//precisa retornar uma promessa
+    }
+
+    buscarPorId(id) {
+       return Promise.resolve(usuariosMock.find((usuario) => usuario.id === id));
+    }
+    adicionar(usuario){
+        return new Promise((resolve) => {
+            resolve(usuario);
+          });
+    }
+    
+    validarNomeUsuarioNaoUtilizado(nome) {
+        return Promise.resolve(!!usuariosMock.find((usuario)=> usuario.nome === nome));//retorna boleando para converter negação dupla. 
+      } 
+      
+    buscarPorNome(nome) {
+          const encontrado = usuariosMock.find((usuario)=> usuario.nome === nome);
+        if(encontrado){
+        return Promise.resolve([encontrado]);
+        }
+        return Promise.resolve([]);
+  }
+}
+/*const query = require("../infraestrutura/database/queries");
 
 class Usuarios{
      listar(){
@@ -7,7 +35,7 @@ class Usuarios{
     }
     buscarPorId(id) {
         const sql = "SELECT * FROM Usuarios WHERE id = ?";
-        return query(sql, id).then((data) => data[0]);
+        return query(sql, id);
 
     }
     alterar(id, valores) {
@@ -54,7 +82,7 @@ class Usuarios{
         const sql = "UPDATE USuarios SET endereco =? WHERE id = ?";
         return query(sql,[endereco,id]);
     }
-}
+}*/
 
 
 module.exports = new Usuarios;

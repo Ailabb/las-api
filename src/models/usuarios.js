@@ -14,24 +14,23 @@ class Usuarios {
    
     const validacoes = [
       {
-        nome: "nome",
-        valido:  usuario.nome.length > 0 && (await this.validarNomeUsuarioNaoUtilizado(usuario.nome)),
-        mensagem: "Nome deve ser informado e deve ser único",
+        nome: `${usuario.nome}`,
+        valido: this.isNomeValido(usuario.nome) &&
+          (await this.validarNomeUsuarioNaoUtilizado(usuario.nome)),
+        mensagem: "Nome informado deve ser único e não vazio",
       },
       {
-        nome: "urlFotoPerfil",
-        valido: await this.validarURLFotoPerfil(usuario.urlFotoPerfil),
-        mensagem: "URL deve uma URL válida",
+        url: `${usuario.urlFotoPerfil}`,
+        valido:
+          this.isFormatoUrlFotoValido(usuario.urlFotoPerfil) &&
+          (await this.isStatusFotoValido(usuario.urlFotoPerfil)),
+        mensagem: "URL informada deve  ser uma URL válida",
       },
     ];
 
     const erros = validacoes.filter((campo) => !campo.valido);
-    
-    if (erros.length >0) {
-      return Promise.reject(erros);
-    } else {
-     return await repositorio.adicionar(usuario);
-    }
+
+    return erros.length > 0 ? Promise.reject(erros) : repositorio.adicionar(usuario)[0];
   }
 
   alterar(id, valores) {
@@ -46,32 +45,54 @@ class Usuarios {
     return repositorio.buscarPorNome(nome);
   }
 
-   validarURLFotoPerfil(url) {
-     const expressao = /https?:\/\/(www.)?[-a-zA-Z0-9@:%.+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%+.~#?&//=]*)/gm;
-        const regex = new RegExp(expressao);
-        if (!url.match(regex)) {
-            return false;
-        }
-      }
-
-      async validarStatus(url){
-        
-       const response = await fetch(url, { method: "HEAD"});
-          if(response.status == 200){
-              return true; 
-          }else{
-              return false;
-          }       
-     }
-
-  async validarNomeUsuarioNaoUtilizado(nome) {
-    const resultados = repositorio.buscarPorNome(nome);
-
-      if (resultados.length > 0) {
-            return false;
-          
-    }          
+  buscarDadosPessoais(id){
+    return repositorio.buscarDadosPessoais(id);
   }
+
+  alterarDadosPessoais(id,nomeCompleto, dataNascimento, rg, cpf ){
+    //const {nomeCompleto, dataNascimento,rg,cpf} = dadosPessoais;
+      return repositorio.alterarDadosPessoais(id,nomeCompleto, dataNascimento, rg, cpf);
+  }
+
+  buscarDadosContatos(id){
+    return repositorio.buscarDadosContatos(id);
+  }
+
+  alterarContatos(id, telefone, celular, email){
+    return repositorio.alterarContatos(id, telefone, celular,email);
+  }
+
+  alterarSenha(id, senha){
+    return repositorio.alterarSenha(id,senha);
+  }
+  buscarEndereco(id){
+    return repositorio.buscarEndereco(id);
+  }
+
+  alterarEndereco(id, endereco){
+    return repositorio.alterarEndereco(id, endereco);
+  }
+  
+  //VALIDAÇÕES//
+
+    isNomeValido(nome) {
+      return nome.length > 3;
+    }  
+    isFormatoUrlFotoValido(urlFoto) {
+      const regex =
+        /https?:\/\/(www.)?[-a-zA-Z0-9@:%.+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%+.~#?&//=]*)/gm;
+  
+      return urlFoto.match(regex);
+    }  
+    async isStatusFotoValido(urlFoto) {
+      const response = await fetch(urlFoto, { method: "HEAD" });
+      return response.status !== 200 ? false : true;
+    }
+    async validarNomeUsuarioNaoUtilizado(nome) {
+      const resultados = await repositorio.buscarPorNome(nome);
+      return resultados.length > 0 ? false : true;
+      
+    }  
 }
 
 module.exports = new Usuarios();

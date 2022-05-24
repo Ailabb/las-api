@@ -10,6 +10,11 @@ module.exports = () => {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
+  //primeira coisa alterada para chegar nesse ponto. mudou a rota para retornar um bem vindo
+  app.get("/", (req, res)=> {
+    res.send("Bem vindo ao LAS-API");
+  });
+
   consign().include("src/controllers").into(app);
 
   // eslint-disable-next-line no-unused-vars
