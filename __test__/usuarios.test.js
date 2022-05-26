@@ -115,19 +115,26 @@ describe("Testa GET /usuarios", () => {
  test("Buscar dados pessoais do usuário", async () =>{
     const resp = await request.get("/usuarios/2/dados-pessoais");  
     expect(resp.statusCode).toBe(200);
-    expect(resp.body).toEqual({
+    expect(resp.body).toEqual([{
       "nomeCompleto": "Paulo Mota",
       "dataNascimento": "1988-10-15T03:00:00.000Z",
       "rg": "1315187951",
       "cpf": "74125896365"
+  }]);
   });
-  });/*
 
-  test("Buscar dados pessoais do usuário ID inválido", async () =>{
-    const resp = await request.get("/usuarios/98/dados-pessoais");  
-    expect(resp.statusCode).toBe(404);
+    test("Buscar os contatos de usuário atráves do ID", async () =>{
+    const resp = await request.get("/usuarios/3/contatos");
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual([
+      {
+        "telefone": "6233648795",
+        "celular": "62987456125",
+        "email": "foobar2@gmail.com"
+      }]);
 
-  });*/
+
+  });
 
 });
 
@@ -278,21 +285,15 @@ describe("Testa Put /usuarios", () =>{
     expect(resp.statusCode).toBe(204);
 
   });
-
   test("Alterar dados do Usuário com Id inválido", async() => {
     const resp = await request.put("/usuarios/99");
     expect(resp.statusCode).toBe(500);
   });
 
-  test("Alterar dados pessoais com ID inválido", async() => {
-    const resp = await request.put("/usuarios/200/dados-pessoais");
-    expect(resp.statusCode).toBe(500);
-
-  });
-  /*test("Alterar dados pessoais com ID inválido", async() => {
+  test("Alterar dados pessoais do Usuário através do ID", async() =>{
     const resp = await request.put("/usuarios/3/dados-pessoais");
     expect(resp.statusCode).toBe(204);
 
-  });*/
+  });
 
 });

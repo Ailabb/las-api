@@ -1,5 +1,5 @@
 const usuariosMock =require ("./usuraios.json");
-const valida  = require("../../models/usuarios");
+//const valida  = require("../../models/usuarios");
 
 class Usuarios {
     listar(){
@@ -34,22 +34,38 @@ class Usuarios {
     }
     buscarDadosPessoais(id){
         
-        const encontrado = usuariosMock.find((usuario) => (usuario.id === id));
-        //const listaDadosPessoais = ["nomeCompleto", "dataNascimento", "rg", "cpf"];
-        console.log(encontrado);
+       const encontrado = (usuariosMock.find((usuario) => usuario.id === id));
+        
         if(encontrado){
-            return Promise.resolve([encontrado.cpf, encontrado.dataNascimento, encontrado.nomecompleto, encontrado.rg]);
-            }
-            return Promise.resolve([]);
-
-        //encontrado.cpf, encontrado.dataNascimento, encontrado.rg, encontrado.cpf
+            return Promise.resolve([{ cpf: encontrado.cpf, dataNascimento: encontrado.dataNascimento, nomeCompleto: encontrado.nomecompleto, rg:encontrado.rg}]);
+        }else{
+            return Promise.reject([]);
+        }
     }
     
+    alterarDadosPessoais(id ){
+        const encontrado = usuariosMock.find((usuario)=> usuario.id === id);
+        if(encontrado){
+        return Promise.resolve([encontrado]);
+        }
+        return Promise.resolve([]);
+    }
+    buscarDadosContatos(id){
+        const encontrado = (usuariosMock.find((usuario) => usuario.id === id));
+        
+        if(encontrado){
+            return Promise.resolve([{ telefone: encontrado.telefone, celular: encontrado.celular, email: encontrado.email}]);
+        }else{
+            return Promise.reject([]);
+        }
+    }
     
       
     
 
-  
+  async isIDvalida(id){
+    return Promise.resolve(!!usuariosMock.find((usuario)=> usuario.id === id));
+    }
 
   
 
@@ -71,14 +87,8 @@ class Usuarios{
    
     
     
-    buscarDadosPessoais(id){
-        const sql = "SELECT nomeCompleto, dataNascimento, rg, cpf FROM Usuarios Where id = ?";
-        return query(sql, id);
-    }
-    alterarDadosPessoais(id, nomeCompleto, dataNascimento, rg, cpf ){
-        const sql = "UPDATE Usuarios Set nomeCompleto = ?, dataNascimento = ?, rg=?, cpf = ? WHERE id = ? ";
-        return query(sql,[nomeCompleto,dataNascimento,rg, cpf, id]);
-    }
+   
+    
     buscarDadosContatos(id){
         const sql = "SELECT telefone, celular, email FROM Usuarios Where id = ?";
         return query(sql, id);

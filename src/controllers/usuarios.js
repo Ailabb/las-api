@@ -46,23 +46,20 @@ module.exports = (app) => {
 
   app.get("/usuarios/:id/dados-pessoais", (req, res, next) => { 
     const id = parseInt(req.params.id);
-    Usuarios.buscarDadosPessoais(id)
-    .then(resultados => res.status(200).json(resultados)[0])
+    Usuarios.buscarDadosPessoais(id)    
+    .then((usuario) => (usuario ? res.json(usuario) : res.status(404).send()))
     .catch(erros => next(erros));
   });
 
   app.put("/usuarios/:id/dados-pessoais", (req, res, next) => {
     const usuario = {};
     usuario.id = parseInt(req.params.id);
-    //const dadosPessoais = req.body;
-    //Usuarios.alterarDadosPessoais(dadosPessoais)
     usuario.nomeCompleto = req.body.nomeCompleto;
     usuario.dataNascimento = req.body.dataNascimento;
     usuario.rg = req.body.rg;
     usuario.cpf= req.body.cpf;
-     //{nomeCompleto, dataNascimento, rg, cpf } = req.body;
     Usuarios.alterarDadosPessoais(usuario.id, usuario.nomeCompleto, usuario.dataNascimento, usuario.rg, usuario.cpf)
-    .then(resultados => res.status(204).json(resultados))
+    .then((usuario) => (usuario ? res.status(204).json(usuario) : res.status(404).send()))
     .catch(erros => next(erros));
    
 

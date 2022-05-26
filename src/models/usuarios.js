@@ -47,12 +47,29 @@ class Usuarios {
     return repositorio.buscarPorNome(nome);
   }
 
-  buscarDadosPessoais(id){
-    return repositorio.buscarDadosPessoais(id);
+ /*async  buscarDadosPessoais(id){
+   const idEncontrado = await this.isIDvalida(id);
+   console.log(idEncontrado + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    if(idEncontrado === true){
+      return Promise.resolve(repositorio.buscarDadosPessoais(id));
+    }else{
+      Promise.resolve(false);
+    }
+  }*/
+
+ async buscarDadosPessoais(id){
+    return await repositorio.buscarDadosPessoais(id);
+    
   }
 
   alterarDadosPessoais(id,nomeCompleto, dataNascimento, rg, cpf ){
     //const {nomeCompleto, dataNascimento,rg,cpf} = dadosPessoais;
+   /* const idEncontrado = await this.isIDvalida(id);
+    if(idEncontrado === true){
+      return Promise.resolve(repositorio.alterarDadosPessoais(id,nomeCompleto, dataNascimento, rg, cpf));
+    }else{
+      Promise.resolve([]);
+    }*/
       return repositorio.alterarDadosPessoais(id,nomeCompleto, dataNascimento, rg, cpf);
   }
 
@@ -95,6 +112,12 @@ class Usuarios {
       return resultados.length > 0 ? false : true;
       
     }
+    /*async isIDvalida(id){
+      const resposta = await repositorio.buscarPorId(id);
+      console.log(resposta +  "<<<<<<<<<<<<<<<<");
+      return resposta.length > 0 ? false : true;
+    }*/
+   
     objCamposAceitos(obj, listaChaves) {
       const chaves = Object.keys(obj);
       const camposMantidos = chaves.filter((chave) =>
