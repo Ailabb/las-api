@@ -15,22 +15,24 @@ class Usuarios {
     const validacoes = [
       {
         nome: `${usuario.nome}`,
-        valido: this.isNomeValido(usuario.nome) &&
-          (await this.validarNomeUsuarioNaoUtilizado(usuario.nome)),
+        valido: this.isNomeValido(usuario?.nome) &&
+          (await this.validarNomeUsuarioNaoUtilizado(usuario?.nome)),
         mensagem: "Nome informado deve ser único e não vazio",
       },
       {
         url: `${usuario.urlFotoPerfil}`,
         valido:
-          this.isFormatoUrlFotoValido(usuario.urlFotoPerfil) &&
-          (await this.isStatusFotoValido(usuario.urlFotoPerfil)),
+          this.isFormatoUrlFotoValido(usuario?.urlFotoPerfil) &&
+          (await this.isStatusFotoValido(usuario?.urlFotoPerfil)),
         mensagem: "URL informada deve  ser uma URL válida",
       },
     ];
 
     const erros = validacoes.filter((campo) => !campo.valido);
 
-    return erros.length > 0 ? Promise.reject(erros) : repositorio.adicionar(usuario)[0];
+    return erros.length > 0
+      ? Promise.reject({erroApp: erros})
+      : repositorio.adicionar(usuario);
   }
 
   alterar(id, valores) {
@@ -76,7 +78,7 @@ class Usuarios {
   //VALIDAÇÕES//
 
     isNomeValido(nome) {
-      return nome.length > 3;
+      return nome?.length > 3;
     }  
     isFormatoUrlFotoValido(urlFoto) {
       const regex =
@@ -92,7 +94,18 @@ class Usuarios {
       const resultados = await repositorio.buscarPorNome(nome);
       return resultados.length > 0 ? false : true;
       
-    }  
+    }
+    objCamposAceitos(obj, listaChaves) {
+      const chaves = Object.keys(obj);
+      const camposMantidos = chaves.filter((chave) =>
+        listaChaves.includes(chave)
+      );
+      return camposMantidos.reduce((novo, chave) => {
+        novo[chave] = obj[chave];
+        return novo;
+      }, {});
+    }
+     
 }
 
 module.exports = new Usuarios();

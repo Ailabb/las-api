@@ -18,16 +18,19 @@ module.exports = () => {
   consign().include("src/controllers").into(app);
 
   // eslint-disable-next-line no-unused-vars
-  app.use((err, req, res, next) => {
-    if (err) {
-      if (ENV === "production") {
-        res.status(500).send({ error: "Algo deu errado..." });
-      } else {
-        res.status(500).send({ error: err });
-      }
-      console.log(err);
-    }
-  });
+  app.use((err, req, res, next) => {// mudar o obj de erro {err}
+    //ERRO INTERNO DA APLICAÇÃO
+    if(err.erroApp){
+      res.status(400).send(err.erroApp);
 
+      //ERRO INTERNO DO SERVIDOR EM AMBIENTE QUE NÃO É DE PRODUÇÃO 
+    }else if (ENV === "production") {
+      res.status(500).send({ error: err.message });
+
+      //ERRO DO SERVIDOR EM AMBIENTE DE PRODUÇÃO
+        } else {
+          res.status(500).send({ error: "Algo deu errado..." });
+        }   
+  });
   return app;
 };

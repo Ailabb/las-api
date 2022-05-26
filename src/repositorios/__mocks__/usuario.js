@@ -1,59 +1,76 @@
 const usuariosMock =require ("./usuraios.json");
+const valida  = require("../../models/usuarios");
 
 class Usuarios {
     listar(){
         return Promise.resolve (usuariosMock);//precisa retornar uma promessa
     }
-
     buscarPorId(id) {
        return Promise.resolve(usuariosMock.find((usuario) => usuario.id === id));
     }
-    adicionar(usuario){
-        return new Promise((resolve) => {
-            resolve(usuario);
-          });
+    alterar(id){
+        const encontradoAlterar = usuariosMock.find((usuario)=> usuario.id === id);
+        if(encontradoAlterar){
+        return Promise.resolve([encontradoAlterar]);
+        }
+        return Promise.reject([]);
     }
-    
-    validarNomeUsuarioNaoUtilizado(nome) {
-        return Promise.resolve(!!usuariosMock.find((usuario)=> usuario.nome === nome));//retorna boleando para converter negação dupla. 
-      } 
-      
+    excluir(id){
+        const encontradoDoExcluir = usuariosMock.find((usuario)=> usuario.id === id);
+        if(encontradoDoExcluir){
+        return Promise.resolve([encontradoDoExcluir]);
+        }
+        return Promise.reject([]);
+    }
     buscarPorNome(nome) {
-          const encontrado = usuariosMock.find((usuario)=> usuario.nome === nome);
+        const encontrado = usuariosMock.find((usuario)=> usuario.nome === nome);
         if(encontrado){
         return Promise.resolve([encontrado]);
         }
         return Promise.resolve([]);
-  }
+    }
+    adicionar(usuario) {
+        return Promise.resolve([{ ...usuario, id: 6 }]);
+    }
+    buscarDadosPessoais(id){
+        
+        const encontrado = usuariosMock.find((usuario) => (usuario.id === id));
+        //const listaDadosPessoais = ["nomeCompleto", "dataNascimento", "rg", "cpf"];
+        console.log(encontrado);
+        if(encontrado){
+            return Promise.resolve([encontrado.cpf, encontrado.dataNascimento, encontrado.nomecompleto, encontrado.rg]);
+            }
+            return Promise.resolve([]);
+
+        //encontrado.cpf, encontrado.dataNascimento, encontrado.rg, encontrado.cpf
+    }
+    
+    
+      
+    
+
+  
+
+  
+
+  validarNomeUsuarioNaoUtilizado(nome) {
+    return Promise.resolve(!!usuariosMock.find((usuario)=> usuario.nome === nome));//retorna boleando para converter negação dupla. 
+  } 
+  
 }
+
+
+ 
+
 /*const query = require("../infraestrutura/database/queries");
 
 class Usuarios{
-     listar(){
-        const sql = "SELECT * FROM Usuarios";
-        return query(sql);
-    }
-    buscarPorId(id) {
-        const sql = "SELECT * FROM Usuarios WHERE id = ?";
-        return query(sql, id);
-
-    }
-    alterar(id, valores) {
-        const sql = "UPDATE Usuarios SET ? WHERE id = ?";
-        return query(sql, [valores,id]);
-    }
-    excluir(id) {
-        const sql = "DELETE FROM Usuarios WHERE id = ?";
-        return query(sql, id);
-    }
-    buscarPorNome(nome) {
-        const sql = "SELECT * FROM Usuarios WHERE nome like ?";
-        return query(sql, "%" + nome + "%" );
-    }
-    adicionar(usuario){
-        const sql = "INSERT INTO Usuarios SET ?";
-        return query(sql, usuario);
-    }
+    
+   
+    
+   
+    
+    
     buscarDadosPessoais(id){
         const sql = "SELECT nomeCompleto, dataNascimento, rg, cpf FROM Usuarios Where id = ?";
         return query(sql, id);
@@ -82,6 +99,8 @@ class Usuarios{
         const sql = "UPDATE USuarios SET endereco =? WHERE id = ?";
         return query(sql,[endereco,id]);
     }
+}
+
 }*/
 
 

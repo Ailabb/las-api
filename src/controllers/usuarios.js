@@ -17,15 +17,15 @@ module.exports = (app) => {
   app.post("/usuarios", (req, res, next) => {
     const usuarios = req.body;
     Usuarios.adicionar(usuarios)
-    .then((resultados) => res.status(201).json(resultados))
-    .catch((erros) => next(erros));
+      .then((resultados) => res.status(201).json(resultados[0]))
+      .catch((erros) => next(erros));
   });
 
   app.put("/usuarios/:id", (req, res, next) => { 
     const id = parseInt(req.params.id);
     const valores = req.body;
     Usuarios.alterar(id, valores)
-    .then(resultados => res.json(resultados))
+    .then(resultados => res.status(204).json(resultados[0]))
     .catch(erros => next(erros));
 
   });
@@ -33,7 +33,7 @@ module.exports = (app) => {
   app.delete("/usuarios/:id", (req, res, next) => { 
     const id = parseInt(req.params.id);
     Usuarios.excluir(id)
-    .then(resultados => res.json(resultados))
+    .then(resultados => res.status(204).json(resultados))
     .catch(erros => next(erros));
   });
 
@@ -47,7 +47,7 @@ module.exports = (app) => {
   app.get("/usuarios/:id/dados-pessoais", (req, res, next) => { 
     const id = parseInt(req.params.id);
     Usuarios.buscarDadosPessoais(id)
-    .then(resultados => res.json(resultados))
+    .then(resultados => res.status(200).json(resultados)[0])
     .catch(erros => next(erros));
   });
 
@@ -62,7 +62,7 @@ module.exports = (app) => {
     usuario.cpf= req.body.cpf;
      //{nomeCompleto, dataNascimento, rg, cpf } = req.body;
     Usuarios.alterarDadosPessoais(usuario.id, usuario.nomeCompleto, usuario.dataNascimento, usuario.rg, usuario.cpf)
-    .then(resultados => res.json(resultados))
+    .then(resultados => res.status(204).json(resultados))
     .catch(erros => next(erros));
    
 
